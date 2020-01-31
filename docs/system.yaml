@@ -38,7 +38,7 @@ paths:
       tags:
         - system
       summary: Read Companion system detected devices
-      description: Read CPU, Disk and RAM status of the companion computer
+      description: Provides a list of devices that are connected and detected by the operating system
       operationId: readDevices
       responses:
         200:
