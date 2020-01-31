@@ -20,7 +20,7 @@ paths:
       tags:
         - system
       summary: Read Companion system running services
-      description: Read CPU, Disk and RAM status of the companion computer
+      description: Provides a status list of running services
       operationId: readServices
       responses:
         200:
@@ -38,7 +38,7 @@ paths:
       tags:
         - system
       summary: Read Companion system detected devices
-      description: Read CPU, Disk and RAM status of the companion computer
+      description: Provides a list of devices that are connected and detected by the operating system
       operationId: readDevices
       responses:
         200:
@@ -46,15 +46,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
                 items:
                   $ref: "#/components/schemas/devicelist"
-                example:
-                  audio: []
-                  video:
-                    - bcm2835-codec-isp
-                  serial:
-                    - fmuv2
+
         500:
           description: Error reading system services
   /system/version:
@@ -70,8 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: 0.0.19-14-g9aa6f65
+                $ref: "#/components/schemas/version"
         500:
           description: Error reading system version
 
@@ -130,18 +124,30 @@ components:
     devicelist:
       type: "object"
       properties:
-        audio:
+        name:
+          type: string
+          description: "Human friendly name."
+        capabilities:
           type: array
+          description: "Device's capability list."
           items:
             type: string
-          example: ["a", "b"]
-        video:
-          type: array
-          items:
-            type: string
-          example: ["a", "b"]
-        serial:
-          type: array
-          items:
-            type: string
-          example: ["a", "b"]
+            description: "Device capability."
+      example:
+        { "name": "Raspberry Camera", "capabilities": ["audio", "video"]}
+
+    version:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: "Base companion release."
+          example: 0.0.19
+        commits:
+          type: number
+          description: "Number of commits over the tag, typically zero."
+          example: 0
+        hash:
+          type: string
+          description: "Hash code of the last commit."
+          example: "g9aa6f65"
