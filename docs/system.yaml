@@ -46,15 +46,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
                 items:
                   $ref: "#/components/schemas/devicelist"
-                example:
-                  audio: []
-                  video:
-                    - bcm2835-codec-isp
-                  serial:
-                    - fmuv2
+
         500:
           description: Error reading system services
   /system/version:
@@ -130,18 +125,14 @@ components:
     devicelist:
       type: "object"
       properties:
-        audio:
+        name:
+          type: string
+          description: "Human friendly name."
+        capabilities:
           type: array
+          description: "Device's capability list."
           items:
             type: string
-          example: ["a", "b"]
-        video:
-          type: array
-          items:
-            type: string
-          example: ["a", "b"]
-        serial:
-          type: array
-          items:
-            type: string
-          example: ["a", "b"]
+            description: "Device capability."
+      example:
+        { "name": "Raspberry Camera", "capabilities": ["audio", "video"]}
