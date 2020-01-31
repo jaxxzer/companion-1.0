@@ -20,7 +20,7 @@ paths:
       tags:
         - system
       summary: Read Companion system running services
-      description: Read CPU, Disk and RAM status of the companion computer
+      description: Provides a status list of running services
       operationId: readServices
       responses:
         200:
