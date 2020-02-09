@@ -1,0 +1,163 @@
+paths:
+  /routing/endpoints:
+    get:
+      tags:
+        - routing
+      summary: Show all available communication endpoints
+      operationId: readEnpoints
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/endpoint"
+        500:
+          description: Failed to list the endpoints
+    post:
+      tags:
+        - routing
+      summary: Create new endpoint.
+      operationId: newEndpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/endpoint"
+      responses:
+        200:
+          description: Endpoint created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/endpoint"
+        500:
+          description: Failed to create endpoint
+    delete:
+      tags:
+        - routing
+      summary: Delete an Endpoint
+      operationId: deleteEndpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                endpointId:
+                  type: integer
+                  example: 0
+      responses:
+        200:
+          description: Endpoint deleted successfully
+        500:
+          description: Failed to delete endpoint
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: Endpoint is still linked"
+
+  /routing/links:
+    get:
+      tags:
+        - routing
+      summary: Show all existent endpoint links
+      operationId: readLinks
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/link"
+        500:
+          description: Failed to list links
+    post:
+      tags:
+        - routing
+      summary: Create new link
+      operationId: newLink
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/link"
+      responses:
+        200:
+          description: Link created successfully
+        500:
+          description: Error while creating link
+    delete:
+      tags:
+        - routing
+      summary: Delete a link
+      operationId: deleteLink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                linkId:
+                  type: integer
+                  example: 0
+      responses:
+        200:
+          description: Link deleted successfully
+        500:
+          description: Failed to delete link
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Failed to delete link (reason here)
+
+
+components:
+  schemas:
+    endpoint:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        pathOrAddress:
+          type: string
+          example: /dev/ttyUSB3 OR 0.0.0.0:1234
+        type:
+          type: string
+          enum: [serial, udpin, udpout, tcpServer, tcpClient]
+        deviceName:
+          type: string
+          example: Ping 360
+
+    link:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 0
+          readOnly: true
+        from_id:
+          type: integer
+          example: 1
+        to_id:
+          type: integer
+          example: 3
+        throughput_bps:
+          type: number
+          example: 123.45
+          readOnly: true
