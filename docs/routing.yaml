@@ -186,7 +186,11 @@ components:
         to_id:
           type: integer
           example: 3
-        throughput_bps:
+        throughput_in_bps:
+          type: number
+          example: 123.45
+          readOnly: true
+        throughput_out_bps:
           type: number
           example: 123.45
           readOnly: true
