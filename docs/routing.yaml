@@ -13,7 +13,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/endpoint"
+                  anyOf:
+                  - $ref: "#/components/schemas/networkEndpoint"
+                  - $ref: "#/components/schemas/serialEndpoint"
         500:
           description: Failed to list the endpoints
     post:
@@ -25,6 +27,9 @@ paths:
         content:
           application/json:
             schema:
+              oneOf:
+                - $ref: '#/components/schemas/networkEndpoint'
+                - $ref: '#/components/schemas/serialEndpoint'
               $ref: "#/components/schemas/endpoint"
       responses:
         200:
@@ -34,7 +39,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/endpoint"
+                  oneOf:
+                  - $ref: "#/components/schemas/networkEndpoint"
+                  - $ref: "#/components/schemas/serialEndpoint"
         500:
           description: Failed to create endpoint
     delete:
@@ -124,25 +131,47 @@ paths:
                 type: string
                 example: Failed to delete link (reason here)
 
-
 components:
   schemas:
-    endpoint:
+    networkEndpoint:
       type: object
       properties:
         id:
           type: integer
           example: 1
           readOnly: true
-        pathOrAddress:
+        ip:
           type: string
-          example: /dev/ttyUSB3 OR 0.0.0.0:1234
-        type:
+          example: 0.0.0.0
+        port:
+          type: integer
+          example: 12345
+        role:
           type: string
-          enum: [serial, udpin, udpout, tcpServer, tcpClient]
-        deviceName:
+          enum: [client, server]
+        protocol:
           type: string
-          example: Ping 360
+          enum: [udp, tcp]
+        name:
+          type: string
+          example: Arduino UDP Relay
+
+    serialEndpoint:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+          readOnly: true
+        devicePath:
+          type: string
+          example: /dev/ttyUSB0
+        baudrate:
+          type: integer
+          example: 115200
+        name:
+          type: string
+          example: Arduino Uno
 
     link:
       type: object
