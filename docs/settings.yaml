@@ -1,0 +1,114 @@
+
+paths:
+  /settings/status:
+    get:
+      tags:
+        - settings
+      summary: Get status of settings service
+      operationId: readStatus
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/settings_status"
+        500:
+          description: Failed to provide status of settings service
+
+  /settings/{settings_name}:
+    get:
+        tags:
+          - settings
+        summary: Get settings from a specific group.
+        operationId: getSettingsByName
+        parameters:
+          - name: settings_name
+            in: path
+            description: "Settings group name."
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/settings_json'
+
+components:
+  schemas:
+    settings_status:
+      type: "object"
+      properties:
+        version:
+          type: object
+          properties:
+            name:
+              type: string
+              description: "Service name."
+              example: "Settings"
+            version:
+              type: object
+              properties:
+                major:
+                  type: integer
+                  example: 1
+                minor:
+                  type: integer
+                  example: 0
+                hash:
+                  type: string
+                  example: "bb1b3a7"
+        settings:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: "Settings name."
+              edited:
+                type: boolean
+                description: "Check if the settings matches the original settings or not."
+
+    settings_json:
+      type: object
+      properties:
+        header:
+          type: object
+          properties:
+            name:
+              type: string
+              description: "Settings group name."
+            modified:
+              type: boolean
+              description: "Inform if the settings were modified."
+            hash:
+              type: string
+              description: "Content in sha1 format."
+              example: "3e2e95f5ad970eadfa7e17eaf73da97024aa5359"
+            date:
+              type: string
+              description: "ISO 8601 / RFC 3339 date & time format."
+              example: "2001-07-08T00:34:60.026490+09:30"
+
+        service:
+          type: object
+          properties:
+            path:
+              type: string
+              description: "System path of the .toml files that contain the settings."
+              example: "/user/pi/.settings/services/service_name.toml"
+            ip:
+              type: string
+              description: "Internet IP address of the running service that uses the settings, empty if it's not a running service."
+            port:
+              type: integer
+              description: "Port of the running process."
+              example: 8088
+
+        settings:
+          type: object
+          description: "Settings keys and values."

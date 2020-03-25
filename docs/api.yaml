@@ -23,6 +23,8 @@ tags:
     description: Camera management
   - name: mavproxy
     description: mavproxy management
+  - name: settings
+    description: Settings service
 servers:
   - url: https://companion.swagger.io/v2
   - url: http://companion.swagger.io/v2
