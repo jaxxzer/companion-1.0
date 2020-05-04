@@ -1,29 +1,9 @@
 paths:
-  /camera/pipeline:
-    get:
-      tags:
-        - camera
-      summary: Get the GStreamer pipeline currently in use
-      description: Get the GStreamer pipeline currently in use
-      operationId: readPipeline
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-                example: |
-                  ! h264parse
-                  ! queue
-                  ! rtph264pay config-interval=10 pt=96
-                  ! udpsink host=192.168.2.255 port=5600
-        500:
-          description: Error reading pipeline
+  /camera/configuration:
     post:
       tags:
         - camera
-      summary: Set a new GStreamer pipeline to use
+      summary: Set a new GStreamer pipeline to use for a specific camera
       description: Set a new GStreamer pipeline to use. It should start with a 'h264parse'
         element.
       operationId: writePipeline
@@ -33,14 +13,34 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: |
-                  ! h264parse
-                  ! queue
-                  ! rtph264pay config-interval=10 pt=96
-                  ! udpsink host=192.168.2.255 port=5600
+                type: object
+                additionalProperties:
+                  schema:
+                    $ref: "#/components/schemas/cameraPipeline"
+              example:
+                /dev/video0: cameraPipeline
         500:
           description: Error writing pipeline
+    get:
+      tags:
+        - camera
+      summary: Get all gstreamer pipelines
+      operationId: readPipelines
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  schema:
+                    $ref: "#/components/schemas/cameraPipeline"
+              example:
+                /dev/video0: cameraPipeline
+        500:
+          description: Error writing pipeline
+
   /camera/getV4L2cameras:
     get:
       tags:
@@ -117,3 +117,19 @@ paths:
           description: successful operation
         500:
           description: Error setting control
+
+components:
+  schemas:
+    cameraPipeline:
+      type: object
+      properties:
+        rtsp-pipeline:
+          type: string
+          enum: [custom, rtsp]
+        pipeline:
+          type: string
+          example: |
+            ! h264parse
+            ! queue
+            ! rtph264pay config-interval=10 pt=96
+            ! udpsink host=192.168.2.255 port=5600
