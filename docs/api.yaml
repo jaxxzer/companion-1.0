@@ -12,9 +12,6 @@ info:
 tags:
   - name: system
     description: System status and diagnostics
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
   - name: pixhawk
     description: Firmware flashing functionalities
   - name: network
