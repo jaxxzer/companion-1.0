@@ -1,135 +1,204 @@
 paths:
-  /camera/configuration:
-    post:
-      tags:
-        - camera
-      summary: Set a new GStreamer pipeline to use for a specific camera
-      description: Set a new GStreamer pipeline to use. It should start with a 'h264parse'
-        element.
-      operationId: writePipeline
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  schema:
-                    $ref: "#/components/schemas/cameraPipeline"
-              example:
-                /dev/video0: cameraPipeline
-        500:
-          description: Error writing pipeline
+  /camera/list/:
     get:
       tags:
         - camera
-      summary: Get all gstreamer pipelines
-      operationId: readPipelines
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  schema:
-                    $ref: "#/components/schemas/cameraPipeline"
-              example:
-                /dev/video0: cameraPipeline
-        500:
-          description: Error writing pipeline
-
-  /camera/getV4L2cameras:
+      summary: list all video devices, including unsupported devices
+  /camera/list/supported:
     get:
       tags:
         - camera
-      summary: Get a List of available cameras via the V4L2 interface
-      description: Get the GStreamer pipeline currently in use
-      operationId: readV4L2Cameras
+      summary: list supported camera devices
+      description: list v4l2 devices that are cameras supporting video capture. This should be used to present camera selection UI to user in video configuration
       responses:
         200:
-          description: successful operation
+          description: success, a list of the supported cameras, and their attributes
           content:
             application/json:
-              schema:
-                type: string
-                example: TO-DO
-        500:
-          description: Error getting cameras list
-  /camera/profiles:
-    get:
-      tags:
-        - camera
-      summary: Get a List of available cameras via the V4L2 interface
-      description: Get the GStreamer pipeline currently in use
-      operationId: readV4L2profiles
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-                example: TO-DO
-        500:
-          description: Error reading profiles
-  /camera/V4l2Control:
-    get:
-      tags:
-        - camera
-      summary: Get a List of available V4L2 Controls for the current camera
-      description: Get the GStreamer pipeline currently in use
-      operationId: readV4L2controls
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-                example: TO-DO
-        500:
-          description: Error reading v4l2 controls
-    post:
-      tags:
-        - camera
-      summary: Get a List of available cameras via the V4L2 interface
-      description: Get the GStreamer pipeline currently in use
-      operationId: setV4L2Controls
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - id
-                - value
               properties:
-                id:
-                  type: integer
-                value:
-                  type: string
-        description: The network to connect to.
+                cameras:
+                  type: array
+                  items:
+                    type: object
+                    schema:
+                      $ref: "#/components/schemas/cameraInformation"
+  /camera/{id}/formats:
+    get:
+      tags:
+        - camera
+      summary: get a list of supported formats for a camera
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraFormats"
+        500:
+          description: error
+  /camera/{id}/format:
+    get:
+      tags:
+        - camera
+      summary: get the current camera format
+      produces:
+        - "application/vnd.cameraFormat+json"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraFormat"
+      schemes: http
+    put:
+      tags:
+        - camera
+      summary: set the camera format
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraFormat"
+  /camera/{id}/controls:
+    get:
+      tags:
+        - camera
+      summary: get camera available controls, and their current values
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraControls"
+        500:
+          description: error
+  /camera/{id}/control/{control}:
+    get:
+      tags:
+        - camera
+      summary: get a camera control
+      produces:
+        - application/vnd.cameraControl+json
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraControl"
+    put:
+      tags:
+        - camera
+      summary: set a camera control
+      operationId: 
       responses:
         200:
           description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraControl"
         500:
           description: Error setting control
+          content:
+            application/json:
+              properties:
+                error:
+                  type: string
+                  description: error message
+                  example: out of range, invalid control
 
 components:
   schemas:
-    cameraPipeline:
+    cameraInfomation:
       type: object
       properties:
-        rtsp-pipeline:
+        id:
+          type: integer
+        description:
           type: string
-          enum: [custom, rtsp]
-        pipeline:
+          example: HD Pro Webcam C920
+        bus:
           type: string
-          example: |
-            ! h264parse
-            ! queue
-            ! rtph264pay config-interval=10 pt=96
-            ! udpsink host=192.168.2.255 port=5600
+          example: usb-0000:34:00.3-3.1.4
+        path:
+          type: string
+          example: /dev/cam/0
+        capabilities:
+          type: integer
+          example: 4096
+    pixelFormat:
+      type: object
+      properties:
+        fourcc:
+          type: string
+          example: 'H264'
+    frameSize:
+      type: object
+      properties:
+        width:
+          type: integer
+          example: 1920
+        height:
+          type: integer
+          example: 1080
+    frameInterval:
+      type: object
+      properties:
+        numerator:
+          type: integer
+        denominator:
+          type: integer
+    cameraFormat:
+      title: "Mediatype identifier: application/vnd.cameraFormat+json; view=default"
+      description: a specific camera format specifying encoding (pixformat), frame size, and frame interval
+      type: object
+      properties:
+        pixelFormat:
+          type: object
+          schema:
+            $ref: "#/components/schemas/pixelFormat"
+        frameSize:
+          type: object
+          schema:
+            $ref: "#/components/schemas/frameSize"
+        frameInterval:
+          type: object
+          schema:
+            $ref: "#/components/schemas/frameInterval"
+    cameraFormats:
+      type: array
+      items:
+        type: object
+        schema:
+          $ref: "#/components/schemas/cameraFormat"
+    cameraControl:
+      title: "Mediatype identifier: application/vnd.cameraControl+json; view=default"
+      type: object
+      properties:
+        index:
+          type: integer
+        id:
+          type: integer
+        value:
+          type: integer
+        default:
+          type: integer
+        min:
+          type: integer
+        max:
+          type: integer
+        type:
+          type: integer
+        menu:
+          type: object
+    cameraControls:
+      type: array
+      items:
+        type: object
+        schema:
+          $ref: "#/components/schemas/cameraControl"
