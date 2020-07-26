@@ -41,8 +41,6 @@ paths:
       tags:
         - camera
       summary: get the current camera format
-      produces:
-        - "application/vnd.cameraFormat+json"
       responses:
         200:
           description: success
@@ -114,30 +112,61 @@ paths:
 
 components:
   schemas:
-    cameraInfomation:
+    deviceInformation:
+      description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-querycap.html and struct v4l2_capability
       type: object
       properties:
-        id:
-          type: integer
+        driver:
+          type: string
+          example: uvcvideo
         description:
           type: string
           example: HD Pro Webcam C920
-        bus:
+        busInfo:
           type: string
           example: usb-0000:34:00.3-3.1.4
-        path:
+        version:
           type: string
-          example: /dev/cam/0
+          example: 5.7.9
         capabilities:
           type: integer
           example: 4096
+        deviceCapabilities:
+          type: integer
+          example: 4096
+        path:
+          type: string
+          example: /dev/video0
     pixelFormat:
       type: object
       properties:
+        format:
+          type: integer
+          example: 0
         fourcc:
           type: string
           example: 'H264'
-    frameSize:
+    formatDescription:
+      description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-fmt.html and struct v4l2_fmtdesc
+      type: object
+      properties:
+        index:
+          type: integer
+          example: 0
+        type:
+          type: integer
+          example: 1
+        flags:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: 'YUV 4:2:2'
+        pixelFormat:
+          type: object
+          schema:
+            $ref: "#/components/schemas/pixelFormat"
+    frameSizeDiscrete:
       type: object
       properties:
         width:
@@ -146,38 +175,111 @@ components:
         height:
           type: integer
           example: 1080
-    frameInterval:
+    frameSizeStepwise:
       type: object
       properties:
-        numerator:
+        minWidth:
           type: integer
-        denominator:
+          example: 32
+        maxWidth:
           type: integer
-    cameraFormat:
-      title: "Mediatype identifier: application/vnd.cameraFormat+json; view=default"
-      description: a specific camera format specifying encoding (pixformat), frame size, and frame interval
+          example: 1920
+        stepWidth:
+          type: integer
+          example: 1
+        minHeight:
+          type: integer
+          example: 32
+        maxHeight:
+          type: integer
+          example: 1080
+        stepHeight:
+          type: integer
+          example: 1
+    frameSizeEnum:
+      description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-framesizes.html and struct v4l2_frmsizeenum
       type: object
       properties:
+        index:
+          type: integer
+          example: 0
         pixelFormat:
           type: object
           schema:
             $ref: "#/components/schemas/pixelFormat"
+        type:
+          description: see enum v4l2_frmsizetypes
+          type: integer
+          example: 0
         frameSize:
           type: object
-          schema:
-            $ref: "#/components/schemas/frameSize"
-        frameInterval:
+          oneOf:
+            - schema:
+              $ref: "#/components/schemas/frameSizeDiscrete"
+            - schema:
+              $ref: "#/components/schemas/frameSizeStepwise"
+    frameIntervalDiscrete:
+      type: object
+      properties:
+        numerator:
+          type: integer
+          example: 1
+        denominator:
+          type: integer
+          example: 30
+    frameIntervalStepwise:
+      type: object
+      properties:
+        min:
+          type: integer
+          example: 1
+        max:
+          type: integer
+          example: 30
+        step:
+          type: integer
+          example: 1
+    frameIntervalEnum:
+      description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-frameintervals.html and struct v4l2_frmivalenum
+      properties:
+        index:
+          type: integer
+          example: 0
+        pixelFormat:
           type: object
           schema:
-            $ref: "#/components/schemas/frameInterval"
-    cameraFormats:
-      type: array
-      items:
-        type: object
-        schema:
-          $ref: "#/components/schemas/cameraFormat"
+            $ref: "#/components/schemas/pixelFormat"
+        width:
+          type: integer
+          example: 1920
+        height:
+          type: integer
+          example: 1080
+        type:
+          description: see v4l2_frmivaltypes
+          type: integer
+          example: 0
+        frameInterval:
+          type: object
+          oneOf:
+            - schema:
+              $ref: "#/components/schemas/frameIntervalDiscrete"
+            - schema:
+              $ref: "#/components/schemas/frameIntervalStepwise"
+    cameraFormat:
+      description: a specific camera format specifying encoding (pixformat), frame size, and frame interval
+      type: object
+      properties:
+        pixelFormat:
+          schema:
+            $ref: "#/components/schemas/pixelFormat"
+        frameSize:
+          schema:
+            $ref: "#/components/schemas/frameSizeDiscrete"
+        frameInterval:
+          schema:
+            $ref: "#/components/schemas/frameIntervalDiscrete"
     cameraControl:
-      title: "Mediatype identifier: application/vnd.cameraControl+json; view=default"
       type: object
       properties:
         index:
