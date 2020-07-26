@@ -3,25 +3,18 @@ paths:
     get:
       tags:
         - camera
-      summary: list all video devices, including unsupported devices
-  /camera/list/supported:
-    get:
-      tags:
-        - camera
-      summary: list supported camera devices
-      description: list v4l2 devices that are cameras supporting video capture. This should be used to present camera selection UI to user in video configuration
+      summary: list video devices
+      description: list v4l2 devices.
       responses:
         200:
-          description: success, a list of the supported cameras, and their attributes
+          description: success
           content:
             application/json:
               properties:
                 cameras:
                   type: array
                   items:
-                    type: object
-                    schema:
-                      $ref: "#/components/schemas/cameraInformation"
+                    $ref: "#/components/schemas/deviceInformation"
   /camera/{id}/formats:
     get:
       tags:
@@ -33,7 +26,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cameraFormats"
+                $ref: "#/components/schemas/formatList"
         500:
           description: error
   /camera/{id}/format:
@@ -164,6 +157,10 @@ components:
           example: 'YUV 4:2:2'
         pixelFormat:
           $ref: "#/components/schemas/pixelFormat"
+    formatList:
+      type: array
+      items:
+        $ref: "#/components/schemas/formatDescription"
     frameSizeDiscrete:
       type: object
       properties:
@@ -260,8 +257,8 @@ components:
       description: a specific camera format specifying encoding (pixformat), frame size, and frame interval
       type: object
       properties:
-        pixelFormat:
-          $ref: "#/components/schemas/pixelFormat"
+        format:
+          $ref: "#/components/schemas/formatDescription"
         frameSize:
           $ref: "#/components/schemas/frameSizeDiscrete"
         frameInterval:
