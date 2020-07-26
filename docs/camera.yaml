@@ -163,9 +163,7 @@ components:
           type: string
           example: 'YUV 4:2:2'
         pixelFormat:
-          type: object
-          schema:
-            $ref: "#/components/schemas/pixelFormat"
+          $ref: "#/components/schemas/pixelFormat"
     frameSizeDiscrete:
       type: object
       properties:
@@ -204,9 +202,7 @@ components:
           type: integer
           example: 0
         pixelFormat:
-          type: object
-          schema:
-            $ref: "#/components/schemas/pixelFormat"
+          $ref: "#/components/schemas/pixelFormat"
         type:
           description: see enum v4l2_frmsizetypes
           type: integer
@@ -214,10 +210,8 @@ components:
         frameSize:
           type: object
           oneOf:
-            - schema:
-              $ref: "#/components/schemas/frameSizeDiscrete"
-            - schema:
-              $ref: "#/components/schemas/frameSizeStepwise"
+            - $ref: "#/components/schemas/frameSizeDiscrete"
+            - $ref: "#/components/schemas/frameSizeStepwise"
     frameIntervalDiscrete:
       type: object
       properties:
@@ -246,9 +240,7 @@ components:
           type: integer
           example: 0
         pixelFormat:
-          type: object
-          schema:
-            $ref: "#/components/schemas/pixelFormat"
+          $ref: "#/components/schemas/pixelFormat"
         width:
           type: integer
           example: 1920
@@ -262,23 +254,18 @@ components:
         frameInterval:
           type: object
           oneOf:
-            - schema:
-              $ref: "#/components/schemas/frameIntervalDiscrete"
-            - schema:
-              $ref: "#/components/schemas/frameIntervalStepwise"
+            - $ref: "#/components/schemas/frameIntervalDiscrete"
+            - $ref: "#/components/schemas/frameIntervalStepwise"
     cameraFormat:
       description: a specific camera format specifying encoding (pixformat), frame size, and frame interval
       type: object
       properties:
         pixelFormat:
-          schema:
-            $ref: "#/components/schemas/pixelFormat"
+          $ref: "#/components/schemas/pixelFormat"
         frameSize:
-          schema:
-            $ref: "#/components/schemas/frameSizeDiscrete"
+          $ref: "#/components/schemas/frameSizeDiscrete"
         frameInterval:
-          schema:
-            $ref: "#/components/schemas/frameIntervalDiscrete"
+          $ref: "#/components/schemas/frameIntervalDiscrete"
     cameraControl:
       type: object
       properties:
@@ -301,6 +288,4 @@ components:
     cameraControls:
       type: array
       items:
-        type: object
-        schema:
-          $ref: "#/components/schemas/cameraControl"
+        $ref: "#/components/schemas/cameraControl"
