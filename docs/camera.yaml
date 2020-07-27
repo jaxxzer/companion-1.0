@@ -26,7 +26,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/formatList"
+                array:
+                items:
+                  $ref: "#/components/schemas/formatDescription"
+        500:
+          description: error
+  /camera/{id}/formats/{pixfmt}/framesizes:
+    get:
+      tags:
+        - camera
+      summary: get a list of supported formats for a camera
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                array:
+                items:
+                  $ref: "#/components/schemas/frameSizeEnum"
+        500:
+          description: error
+  /camera/{id}/formats/{pixfmt}/{width}/{height}/frameintervals:
+    get:
+      tags:
+        - camera
+      summary: get a list of supported frameintervals for a given pixelFormat, width, and height
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                array:
+                items:
+                  $ref: "#/components/schemas/frameIntervalEnum"
         500:
           description: error
   /camera/{id}/format:
@@ -72,8 +106,6 @@ paths:
       tags:
         - camera
       summary: get a camera control
-      produces:
-        - application/vnd.cameraControl+json
       responses:
         200:
           description: success
@@ -105,6 +137,21 @@ paths:
 
 components:
   schemas:
+    capabilities:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 4096
+        caps:
+          type: array
+          items:
+            - type: string
+          example:
+            - "Video Capture"
+            - "Metadata Capture"
+            - "Streaming"
+            - "Extended Pix Format"
     deviceInformation:
       description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-querycap.html and struct v4l2_capability
       type: object
@@ -122,18 +169,16 @@ components:
           type: string
           example: 5.7.9
         capabilities:
-          type: integer
-          example: 4096
+          $ref: "#/components/schemas/capabilities"
         deviceCapabilities:
-          type: integer
-          example: 4096
+          $ref: "#/components/schemas/capabilities"
         path:
           type: string
           example: /dev/video0
     pixelFormat:
       type: object
       properties:
-        format:
+        code:
           type: integer
           example: 0
         fourcc:
@@ -157,10 +202,6 @@ components:
           example: 'YUV 4:2:2'
         pixelFormat:
           $ref: "#/components/schemas/pixelFormat"
-    formatList:
-      type: array
-      items:
-        $ref: "#/components/schemas/formatDescription"
     frameSizeDiscrete:
       type: object
       properties:
