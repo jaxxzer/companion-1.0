@@ -105,7 +105,7 @@ paths:
               schema:
                 array:
                 items:
-                  $ref: "#/components/schemas/queryControl"
+                  $ref: "#/components/schemas/controlInformation"
         500:
           description: error
   /camera/{id}/control/{control}:
@@ -155,11 +155,7 @@ components:
           type: array
           items:
             - type: string
-          example:
-            - "Video Capture"
-            - "Metadata Capture"
-            - "Streaming"
-            - "Extended Pix Format"
+          example: [ "Video Capture", "Metadata Capture", "Streaming", "Extended Pix Format" ]
     deviceInformation:
       description: see https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-querycap.html and struct v4l2_capability
       type: object
@@ -318,9 +314,11 @@ components:
       properties:
         id:
           type: integer
+          example: 0
         value:
           type: integer
-    queryMenu:
+          example: 1
+    controlMenu:
       description: See VIDIOC_QUERYMENU https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
       type: object
       properties:
@@ -333,7 +331,7 @@ components:
             type: string
           - value:
             type: integer
-    queryControl:
+    controlInformation:
       description: See VIDIOC_QUERYCTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
       type: object
       properties:
@@ -357,4 +355,3 @@ components:
           items:
             $ref: "#/components/schemas/queryMenu"
       required: [ id, type, minimum, maximum, step, defaultValue, flags ]
-
