@@ -10,11 +10,10 @@ paths:
           description: success
           content:
             application/json:
-              properties:
-                cameras:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/deviceInformation"
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/deviceInformation"
   /camera/{id}/formats:
     get:
       description: See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-fmt.html and struct v4l2_fmtdesc
