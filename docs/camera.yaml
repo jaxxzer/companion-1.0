@@ -79,7 +79,8 @@ paths:
     put:
       tags:
         - camera
-      summary: set the camera format
+      summary: Check the validity of the desired camera format
+      description: See VIDIOC_TRY_FMT https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-fmt.html. Check if the desired camera format is valid. This operation may be performed while the video device is accessed by the video streaming service. To apply the format, it should be POSTed to the video service
       responses:
         200:
           description: success
