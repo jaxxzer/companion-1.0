@@ -93,42 +93,46 @@ paths:
                 $ref: "#/components/schemas/cameraFormat"
   /camera/{id}/controls:
     get:
+      description: See VIDIOC_QUERYCTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
       tags:
         - camera
-      summary: get camera available controls, and their current values
+      summary: Get available controls for the video device
       responses:
         200:
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cameraControls"
+                array:
+                items:
+                  $ref: "#/components/schemas/queryControl"
         500:
           description: error
   /camera/{id}/control/{control}:
     get:
+      description: See VIDIOC_G_CTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-ctrl.html
       tags:
         - camera
-      summary: get a camera control
+      summary: Get the current value for a video device control
       responses:
         200:
           description: success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cameraControl"
+                $ref: "#/components/schemas/controlValue"
     put:
+      description: See VIDIOC_S_CTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-ctrl.html
       tags:
         - camera
-      summary: set a camera control
-      operationId: 
+      summary: Set the value for a video device control
       responses:
         200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cameraControl"
+                $ref: "#/components/schemas/controlValue"
         500:
           description: Error setting control
           content:
@@ -308,26 +312,49 @@ components:
           $ref: "#/components/schemas/frameSizeDiscrete"
         frameInterval:
           $ref: "#/components/schemas/frameIntervalDiscrete"
-    cameraControl:
+    controlValue:
+      description: See VIDIOC_G_CTRL, VIDIOC_S_CTRL, and struct v4l2_control https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-ctrl.html
       type: object
       properties:
-        index:
-          type: integer
         id:
           type: integer
         value:
           type: integer
-        default:
+    queryMenu:
+      description: See VIDIOC_QUERYMENU https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
+      type: object
+      properties:
+        id:
           type: integer
-        min:
+        index:
           type: integer
-        max:
+        oneOf:
+          - name:
+            type: string
+          - value:
+            type: integer
+    queryControl:
+      description: See VIDIOC_QUERYCTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
+      type: object
+      properties:
+        id:
           type: integer
         type:
           type: integer
+        minimum:
+          type: integer
+        maximum:
+          type: integer
+        step:
+          type: integer
+        defaultValue:
+          type: integer
+        flags:
+          type: integer
         menu:
-          type: object
-    cameraControls:
-      type: array
-      items:
-        $ref: "#/components/schemas/cameraControl"
+          description: This optional property is included for menu type controls to enumerate + describe the menu options
+          type: array
+          items:
+            $ref: "#/components/schemas/queryMenu"
+      required: [ id, type, minimum, maximum, step, defaultValue, flags ]
+
