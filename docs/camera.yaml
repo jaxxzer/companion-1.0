@@ -21,6 +21,13 @@ paths:
       tags:
         - camera
       summary: get a list of supported formats for a camera
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: success
@@ -38,6 +45,19 @@ paths:
       tags:
         - camera
       summary: get a list of supported formats for a camera
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
+        - in: path
+          name: pixfmt
+          schema:
+            type: integer
+          required: true
+          description: The pixel format for which to query available frame sizes. This should match the `code` of one of the pixel formats returned by the /formats query
       responses:
         200:
           description: success
@@ -54,7 +74,32 @@ paths:
       description: See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-frameintervals.html and struct v4l2_frmivalenum
       tags:
         - camera
-      summary: get a list of supported frameintervals for a given pixelFormat, width, and height
+      summary: get a list of supported frame intervals for a given pixelFormat, width, and height
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
+        - in: path
+          name: pixfmt
+          schema:
+            type: integer
+          required: true
+          description: The pixel format for which to query available frame intervals. This should match the `code` of one of the pixel formats returned by the /formats query
+        - in: path
+          name: width
+          schema:
+            type: integer
+          required: true
+          description: The frame width for which to query available frame intervals. This should match the `width` of one of the frame sizes returned by the /framesizes query
+        - in: path
+          name: height
+          schema:
+            type: integer
+          required: true
+          description: The frame height for which to query available frameintervals. This should match the `height` of one of the frame sizes returned by the /framesizes query
       responses:
         200:
           description: success
@@ -71,6 +116,13 @@ paths:
       tags:
         - camera
       summary: get the current camera format
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: success
@@ -84,6 +136,13 @@ paths:
         - camera
       summary: Check the validity of the desired camera format
       description: See VIDIOC_TRY_FMT https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-fmt.html. Check if the desired camera format is valid. This operation may be performed while the video device is accessed by the video streaming service. To apply the format, it should be POSTed to the video service
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: success
@@ -97,6 +156,13 @@ paths:
       tags:
         - camera
       summary: Get available controls for the video device
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: success
@@ -108,12 +174,19 @@ paths:
                   $ref: "#/components/schemas/controlInformation"
         500:
           description: error
-  /camera/{id}/control/{control}:
+  /camera/{id}/control/{controlId}:
     get:
       description: See VIDIOC_G_CTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-ctrl.html
       tags:
         - camera
       summary: Get the current value for a video device control
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: success
@@ -121,11 +194,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/controlValue"
+  /camera/{id}/control/{controlId}/{value}:
     put:
       description: See VIDIOC_S_CTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-g-ctrl.html
       tags:
         - camera
       summary: Set the value for a video device control
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: index of the video device path, eg 0 for /dev/video0
       responses:
         200:
           description: successful operation
