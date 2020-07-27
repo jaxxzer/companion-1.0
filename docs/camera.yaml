@@ -4,7 +4,7 @@ paths:
       tags:
         - camera
       summary: list video devices
-      description: list v4l2 devices.
+      description: List v4l2 devices and associated attributes. See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-querycap.html and struct v4l2_capability
       responses:
         200:
           description: success
@@ -17,6 +17,7 @@ paths:
                     $ref: "#/components/schemas/deviceInformation"
   /camera/{id}/formats:
     get:
+      description: See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-fmt.html and struct v4l2_fmtdesc
       tags:
         - camera
       summary: get a list of supported formats for a camera
@@ -33,6 +34,7 @@ paths:
           description: error
   /camera/{id}/formats/{pixfmt}/framesizes:
     get:
+      description: See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-framesizes.html and struct v4l2_frmsizeenum
       tags:
         - camera
       summary: get a list of supported formats for a camera
@@ -49,6 +51,7 @@ paths:
           description: error
   /camera/{id}/formats/{pixfmt}/{width}/{height}/frameintervals:
     get:
+      description: See https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/vidioc-enum-frameintervals.html and struct v4l2_frmivalenum
       tags:
         - camera
       summary: get a list of supported frameintervals for a given pixelFormat, width, and height
