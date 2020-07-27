@@ -187,6 +187,12 @@ paths:
             type: integer
           required: true
           description: index of the video device path, eg 0 for /dev/video0
+        - in: path
+          name: controlId
+          schema:
+            type: integer
+          required: true
+          description: The id of the video device control. This should match the `id` property of a `controlInformation` object returned from the /controls query.
       responses:
         200:
           description: success
@@ -207,6 +213,18 @@ paths:
             type: integer
           required: true
           description: index of the video device path, eg 0 for /dev/video0
+        - in: path
+          name: controlId
+          schema:
+            type: integer
+          required: true
+          description: The id of the video device control. This should match the `id` property of a `controlInformation` object returned from the /controls query.
+        - in: path
+          name: value
+          schema:
+            type: integer
+          required: true
+          description: The value of the video device control. This should be in the allowed range specified by the `controlInformation` object returned from the /controls query.
       responses:
         200:
           description: successful operation
