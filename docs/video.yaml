@@ -1,75 +1,95 @@
 paths:
   /stream/{cameraId}:
     get:
-      tags:
-        - stream
-      summary: get camera configuration
+      tags: [stream]
+      summary: Get video device stream configuration
       responses:
         200:
           description: success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/cameraConfig"
+                $ref: "#/components/schemas/cameraConfiguration"
   /stream/{cameraId}/format:
     put:
-      summary: Set the video device output format
+      tags: [stream]
+      summary: Configure the video device output format
       parameters:
         - in: body
-        name: format
-        description: set the output format for a video device (eg h264, 1080p, 30fps)
-        schema:
-          $ref: "camera.yaml#/components/schema/cameraFormat"
+          name: format
+          description: set the output format for a video device (eg h264, 1080p, 30fps)
+          schema:
+            $ref: "camera.yaml#/components/schemas/cameraConfiguration"
+    responses:
+      200:
+        description: success
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/cameraConfiguration"
   /stream/{cameraId}/add:
     put:
+      tags: [stream]
       description: Add a stream configuration to the selected video device
       parameters:
         - in: path
-        name: cameraId
-        description: the video device to add a stream to
+          name: cameraId
+          description: the video device to add a stream to
         - in: body
-        name: stream
-        description: the stream configuration to add
-  /stream/{cameraId}/remove/{index}:
+          name: streamConfiguration
+          description: the stream configuration to add
+          schema:
+            $ref: "#/components/schemas/streamConfiguration"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraConfiguration"
+  /stream/{cameraId}/remove:
     put:
+      tags: [stream]
       description: Remove a stream configuration from the selected video device
       parameters:
         - in: path
-        name: cameraId
-        description: the video device to remove a stream from
-        - in: path
-        name: index
-        description: the index of the stream configuration to remove
-
+          name: cameraId
+          description: the video device to remove a stream from
+        - in: query
+          name: index
+          description: the index of the stream configuration to remove
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraConfiguration"
 components:
   schemas:
-    streamConfig:
+    streamConfiguration:
       type: object
       properties:
-        index:
-          description: The index of this stream. A single video device may have multiple streams attributed to it.
-          type: integer
-          example: 0
         type:
           description: The video stream type
           type: string
           enum: [ "udp", "rtsp", "file" ]
           example: "udp"
         url:
-          description: Where the stream data is sent
+          description: Where the stream data is sent, this may be read only in the case of RTSP
           type: string
           example: "192.168.2.1:5600"
-    cameraConfig:
+    cameraConfiguration:
       type: object
       properties:
         device:
+          description: the video output format for the video device (eg h264, 1080p, 30fps)
           type: string
           example: "/dev/video0"
         format:
-          $ref: "camera.yaml#/components/schemas/cameraFormat"
+          schema:
+            $ref: 'camera.yaml#/components/schemas/cameraFormat'
         streams:
           type: array
           items:
-            ref$: "#/components/schemas/streamConfig"
+            - ref$: "#/components/schemas/streamConfiguration"

@@ -129,7 +129,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/cameraFormat"
-      schemes: http
     put:
       tags:
         - camera
@@ -425,10 +424,14 @@ components:
         index:
           type: integer
         oneOf:
-          - name:
-            type: string
-          - value:
-            type: integer
+          - type: object
+            properties:
+              name:
+                type: string
+          - type: object
+            properties:
+              value:
+                type: integer
     controlInformation:
       description: See VIDIOC_QUERYCTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
       type: object
@@ -451,5 +454,5 @@ components:
           description: This optional property is included for menu type controls to enumerate + describe the menu options
           type: array
           items:
-            $ref: "#/components/schemas/queryMenu"
+            $ref: "#/components/schemas/controlMenu"
       required: [ id, type, minimum, maximum, step, defaultValue, flags ]
