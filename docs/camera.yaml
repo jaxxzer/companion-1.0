@@ -391,7 +391,6 @@ components:
           type: integer
           example: 0
         frameInterval:
-          type: object
           oneOf:
             - $ref: "#/components/schemas/frameIntervalDiscrete"
             - $ref: "#/components/schemas/frameIntervalStepwise"
@@ -423,15 +422,15 @@ components:
           type: integer
         index:
           type: integer
-        oneOf:
-          - type: object
-            properties:
-              name:
-                type: string
-          - type: object
-            properties:
-              value:
-                type: integer
+        name:
+          type: string
+        value:
+          type: integer
+      required: [id, index]
+          # this does not display correctly in the swagger ui, but is apparently the correct way
+      oneOf:
+        - required: [name]
+        - required: [value]
     controlInformation:
       description: See VIDIOC_QUERYCTRL https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-queryctrl.html
       type: object

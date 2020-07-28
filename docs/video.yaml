@@ -20,13 +20,13 @@ paths:
           description: set the output format for a video device (eg h264, 1080p, 30fps)
           schema:
             $ref: "camera.yaml#/components/schemas/cameraConfiguration"
-    responses:
-      200:
-        description: success
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/cameraConfiguration"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cameraConfiguration"
   /stream/{cameraId}/add:
     put:
       tags: [stream]
@@ -87,8 +87,7 @@ components:
           type: string
           example: "/dev/video0"
         format:
-          schema:
-            $ref: 'camera.yaml#/components/schemas/cameraFormat'
+          $ref: 'camera.yaml#/components/schemas/cameraFormat'
         streams:
           type: array
           items:
