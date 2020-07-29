@@ -239,7 +239,6 @@ paths:
                   type: string
                   description: error message
                   example: out of range, invalid control
-
 components:
   schemas:
     capabilities:

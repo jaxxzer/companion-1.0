@@ -5,11 +5,7 @@ paths:
       summary: Get video device stream configuration
       responses:
         200:
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/cameraConfiguration"
+          $ref: "#/components/responses/streamSuccess"
   /stream/{cameraId}/format:
     put:
       tags: [stream]
@@ -22,11 +18,7 @@ paths:
             $ref: "#/components/schemas/cameraFormat"
       responses:
         200:
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/cameraConfiguration"
+          $ref: "#/components/responses/streamSuccess"
   /stream/{cameraId}/add:
     put:
       tags: [stream]
@@ -42,11 +34,7 @@ paths:
             $ref: "#/components/schemas/streamConfiguration"
       responses:
         200:
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/cameraConfiguration"
+          $ref: "#/components/responses/streamSuccess"
   /stream/{cameraId}/remove:
     put:
       tags: [stream]
@@ -60,11 +48,7 @@ paths:
           description: the index of the stream configuration to remove
       responses:
         200:
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/cameraConfiguration"
+          $ref: "#/components/responses/streamSuccess"
 components:
   schemas:
     streamConfiguration:
@@ -92,3 +76,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/streamConfiguration"
+  responses:
+    streamSuccess:
+      description: success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/cameraConfiguration"
+
